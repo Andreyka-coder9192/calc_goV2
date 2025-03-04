@@ -129,44 +129,77 @@ go run .\cmd\agent\main.go
 
 ### Dockerfile для оркестратора (Dockerfile.orchestrator)
 ~~~dockerfile
-FROM golang:1.20-alpine
+FROM golang:1.20-alpine AS builder
 WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
 COPY . .
+RUN go build -o orchestrator ./cmd/orchestrator
+
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/orchestrator .
 ENV TIME_ADDITION_MS=200 \
     TIME_SUBTRACTION_MS=200 \
     TIME_MULTIPLICATIONS_MS=300 \
     TIME_DIVISIONS_MS=400
-RUN go build -o orchestrator ./cmd/orchestrator
-CMD ["./orchestrator"]
+EXPOSE 8080
+ENTRYPOINT ["./orchestrator"]
 ~~~
 
 ### Dockerfile для агента (Dockerfile.agent)
 ~~~dockerfile
-FROM golang:1.20-alpine
+FROM golang:1.20-alpine AS builder
 WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
 COPY . .
+RUN go build -o agent ./cmd/agent
+
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/agent .
 ENV COMPUTING_POWER=4 \
     ORCHESTRATOR_URL=http://orchestrator:8080
-RUN go build -o agent ./cmd/agent
-CMD ["./agent"]
+ENTRYPOINT ["./agent"]
 ~~~
 
 ### docker-compose.yml
 ~~~yaml
 version: "3.8"
+
 services:
   orchestrator:
+    container_name: orchestrator
     build:
       context: .
       dockerfile: Dockerfile.orchestrator
     ports:
       - "8080:8080"
+    environment:
+      - TIME_ADDITION_MS=200
+      - TIME_SUBTRACTION_MS=200
+      - TIME_MULTIPLICATIONS_MS=300
+      - TIME_DIVISIONS_MS=400
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+
   agent:
+    container_name: agent
     build:
       context: .
       dockerfile: Dockerfile.agent
     depends_on:
-      - orchestrator
+      orchestrator:
+        condition: service_healthy
+    environment:
+      - COMPUTING_POWER=4
+      - ORCHESTRATOR_URL=http://orchestrator:8080
+    restart: always
 ~~~
 
 Запуск через Docker Compose:
