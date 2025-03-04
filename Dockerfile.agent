@@ -7,4 +7,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -o agent ./cmd/agent/main.go
 FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/agent .
-CMD ["./agent"]
+ENTRYPOINT ["./agent"]

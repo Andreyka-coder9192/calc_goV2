@@ -8,4 +8,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/orchestrator .
 EXPOSE 8080
-CMD ["./orchestrator"]
+ENTRYPOINT ["./orchestrator"]
