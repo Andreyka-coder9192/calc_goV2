@@ -1,8 +1,6 @@
 version: "3.8"
-
 services:
   orchestrator:
-    container_name: orchestrator
     build:
       context: .
       dockerfile: Dockerfile.orchestrator
@@ -13,22 +11,12 @@ services:
       - TIME_SUBTRACTION_MS=200
       - TIME_MULTIPLICATIONS_MS=300
       - TIME_DIVISIONS_MS=400
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 10s
-      retries: 5
-      start_period: 5s
-
   agent:
-    container_name: agent
     build:
       context: .
       dockerfile: Dockerfile.agent
     depends_on:
-      orchestrator:
-        condition: service_healthy
+      - orchestrator
     environment:
       - COMPUTING_POWER=4
       - ORCHESTRATOR_URL=http://orchestrator:8080
-    restart: always
