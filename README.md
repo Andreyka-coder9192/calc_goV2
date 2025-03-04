@@ -202,6 +202,15 @@ services:
     restart: always
 ~~~
 
+### .dockerignore
+~~~bash
+.git
+node_modules
+*.log
+bin/
+vendor/
+~~~
+
 Запуск через Docker Compose:
 ~~~bash
 docker-compose up --build
