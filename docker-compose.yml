@@ -20,3 +20,11 @@ services:
     environment:
       - COMPUTING_POWER=4
       - ORCHESTRATOR_URL=http://orchestrator:8080
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "8081:80"
+    depends_on:
+      - orchestrator

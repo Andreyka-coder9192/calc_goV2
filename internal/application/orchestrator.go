@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/rs/cors"
 )
 
 type Config struct {
@@ -263,6 +265,7 @@ func (o *Orchestrator) scheduleTasks(expr *Expression) {
 
 func (o *Orchestrator) RunServer() error {
 	mux := http.NewServeMux()
+	//cors включить
 	mux.HandleFunc("/api/v1/calculate", o.CalculateHandler)
 	mux.HandleFunc("/api/v1/expressions", o.expressionsHandler)
 	mux.HandleFunc("/api/v1/expressions/", o.expressionByIDHandler)
@@ -277,6 +280,7 @@ func (o *Orchestrator) RunServer() error {
 	})
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"error":"Not Found"}`, http.StatusNotFound)
+
 	})
 	go func() {
 		for {
@@ -288,5 +292,6 @@ func (o *Orchestrator) RunServer() error {
 			o.mu.Unlock()
 		}
 	}()
-	return http.ListenAndServe(":"+o.Config.Addr, mux)
+	handler := cors.Default().Handler(mux)
+	return http.ListenAndServe(":"+o.Config.Addr, handler)
 }
