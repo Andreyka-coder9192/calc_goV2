@@ -125,16 +125,6 @@ $env:ORCHESTRATOR_URL = "http://localhost:8080"
 go run .\cmd\agent\main.go
 ~~~
 
-## Запуск фронтенда
-
-Фронтенд запускается вместе с остальными сервисами через `docker-compose`. Для старта выполните команду:  
-~~~bash
-docker-compose up --build
-~~~
-Затем откройте браузер и перейдите по адресу http://localhost:8081.
-
-После ввода выражения и нажатия "Вычислить" запрос отправится на API (http://localhost:8080/api/v1/calculate).
-
 ## Дополнительно: Запуск в Docker
 
 ### Dockerfile для оркестратора (Dockerfile.orchestrator)
@@ -213,6 +203,16 @@ vendor/
 ~~~bash
 docker-compose up --build
 ~~~
+
+## Запуск фронтенда
+
+Фронтенд запускается вместе с остальными сервисами через `docker-compose`. Для старта выполните команду:  
+~~~bash
+docker-compose up --build
+~~~
+Затем откройте браузер и перейдите по адресу http://localhost:8081.
+
+После ввода выражения и нажатия "Вычислить" запрос отправится на API (http://localhost:8080/api/v1/calculate).
 
 ## API Endpoints
 
