@@ -387,4 +387,4 @@ curl --location 'http://localhost:8080/api/v1/calculate' \
 go test .\tests\
 ```
 
-P.S. любые вопросы -> @yMep_8_MapTa
+P.S. любые вопросы -> [telegram](https://t.me/yMep_8_MapTa)
