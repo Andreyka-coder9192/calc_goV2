@@ -6,8 +6,8 @@
 
 1. **Клонируйте репозиторий**:
     ```bash
-    git clone https://github.com/Andreyka-coder9192/calc_go.git
-    cd calc_go
+    git clone https://github.com/Andreyka-coder9192/calc_goV2.git
+    cd calc_goV2
     ```
 
 2. **Убедитесь, что установлен Go 1.20+**:
